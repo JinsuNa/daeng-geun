@@ -9,5 +9,3 @@ public class DaengGeunApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DaengGeunApplication.class, args);
 	}
-
-}
