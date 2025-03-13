@@ -8,8 +8,8 @@
 import axios from "axios"
 
 // API 기본 URL 설정 (실제 배포 시 환경에 맞게 변경)
-// const API_BASE_URL = 'http://localhost:8080/api';
-const API_BASE_URL = "/api" // 프록시 설정 시
+const API_BASE_URL = 'http://localhost:8080/api';
+// const API_BASE_URL = "/api" // 프록시 설정 시
 
 // axios 인스턴스 생성
 const api = axios.create({
@@ -54,79 +54,48 @@ api.interceptors.response.use(
  */
 
 // 로그인 API
-export const login = async (username, password) => {
+export const login = async (email, password) => {
   try {
-    // 실제 구현 시에는 아래 주석 해제
-    /*
-    const response = await api.post('/auth/login', {
-      username,
-      password,
-    });
-    return response.data;
-    */
+      const response = await fetch("http://localhost:8080/api/login", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+      });
 
-    // 임시 구현 (백엔드 연동 전까지만 사용)
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // 테스트용 계정 확인
-        if ((username === "admin" && password === "admin123") || (username === "user" && password === "user123")) {
-          const userData = {
-            name: username === "admin" ? "관리자" : "초코",
-            email: username,
-            petName: username === "admin" ? "관리자" : "초코",
-            location: username === "admin" ? "관리자" : "강남구",
-          }
+      if (!response.ok) {
+          throw new Error("로그인 실패: 이메일 또는 비밀번호가 올바르지 않습니다.");
+      }
 
-          const token = "dummy-jwt-token-" + Math.random().toString(36).substring(2)
-
-          resolve({
-            user: userData,
-            token: token,
-            success: true,
-          })
-        } else {
-          reject({
-            message: "아이디 또는 비밀번호가 올바르지 않습니다.",
-            success: false,
-          })
-        }
-      }, 1000)
-    })
+      const data = await response.json();
+      return data; // { userId, email, nickname, token }
   } catch (error) {
-    throw error.response ? error.response.data : error
+      throw error;
   }
-}
+};
 
 // 회원가입 API
 export const register = async (userData) => {
   try {
-    // 실제 구현 시에는 아래 주석 해제
-    /*
-    const response = await api.post('/auth/register', userData);
-    return response.data;
-    */
-
-    // 임시 구현 (백엔드 연동 전까지만 사용)
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const token = "dummy-jwt-token-" + Math.random().toString(36).substring(2)
-
-        resolve({
-          user: {
-            name: userData.petName,
-            email: userData.email,
-            petName: userData.petName,
-            location: userData.location,
+      const response = await fetch("http://localhost:8080/api/register", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
           },
-          token: token,
-          success: true,
-        })
-      }, 1500)
-    })
+          body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "회원가입에 실패했습니다.");
+      }
+
+      return await response.text(); // 회원가입 성공 메시지 반환
   } catch (error) {
-    throw error.response ? error.response.data : error
+      throw error;
   }
-}
+};
 
 // 비밀번호 찾기 API
 export const forgotPassword = async (username, email) => {

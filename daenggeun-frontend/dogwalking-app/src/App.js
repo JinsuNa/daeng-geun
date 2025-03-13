@@ -22,6 +22,9 @@ import "./styles/App.css"
 
 function App() {
   // 사용자 인증 상태 관리
+
+  
+  
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState(null)
 
