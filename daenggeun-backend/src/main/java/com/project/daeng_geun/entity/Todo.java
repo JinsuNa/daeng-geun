@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "todos")
@@ -30,10 +32,10 @@ public class Todo {
 
     @Column(nullable = false)
     private LocalDate date;
-
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @PrePersist
