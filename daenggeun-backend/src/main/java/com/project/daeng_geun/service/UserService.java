@@ -28,7 +28,7 @@ public class UserService {
         Map<String, Object> response = new HashMap<>();
 
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            response.put("success", false);
+            response.put("false", false);
             response.put("message", "이미 사용 중인 이메일입니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
