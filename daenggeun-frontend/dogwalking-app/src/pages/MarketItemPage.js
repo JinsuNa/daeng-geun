@@ -214,7 +214,7 @@ function MarketItemPage() {
         {/* 위치 및 등록일 */}
         <div className="product-meta">
           <p>📍 위치: {product.location || "위치 정보 없음"}</p>
-          <p>👀 조회수: {product.views}</p>
+          <p>👀 조회수: {product.views}회</p>
           <p>🕒 등록일: {formatDate(product.createdAt)}</p>
           {product.updatedAt && product.updatedAt !== product.createdAt && (
             <p>✏️ 수정일: {formatDate(product.updatedAt)}</p>
