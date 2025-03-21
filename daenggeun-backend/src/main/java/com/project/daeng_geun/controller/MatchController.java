@@ -2,6 +2,8 @@ package com.project.daeng_geun.controller;
 
 import com.project.daeng_geun.dto.ChatDTO;
 import com.project.daeng_geun.dto.MatchDTO;
+import com.project.daeng_geun.dto.MatchRequestDTO;
+import com.project.daeng_geun.dto.SenderReceiverDTO;
 import com.project.daeng_geun.entity.Match;
 import com.project.daeng_geun.entity.User;
 import com.project.daeng_geun.repository.MatchRepository;
@@ -48,20 +50,24 @@ public class MatchController {
         return ResponseEntity.ok(topDogs);
     }
 
-    //    채팅 controlelr
-    @GetMapping("/{sendId}/{receiverId}")
-    public List<ChatDTO> getChatHistory(@PathVariable("sendId") Long senderId, @PathVariable("receiverId") Long receiverId) {
-        User sender = userRepository.findById(senderId).orElse(null);
-        User receiver = userRepository.findById(receiverId).orElse(null);
 
-        if (sender == null || receiver == null) {
-            log.warn("발신자 또는 사용자가 존재하지 않습니다.");
-            return List.of();
-        }
-        log.info("채팅 내역 조회: {} ↔ {}", senderId, receiverId);
-        return matchRepository.findBySenderAndReceiverOrderByCreatedAtAsc(sender, receiver)
-                .stream()
-                .map(ChatDTO::fromEntity) // 🚀 ChatDTO로 변환하여 응답
-                .toList();
+    @GetMapping("/doglist")
+    public ResponseEntity<List<SenderReceiverDTO>> getMatch(@RequestParam Long senderId) {
+        return ResponseEntity.ok(matchService.getMatch(senderId));
+    }
+
+    @PostMapping
+    public ResponseEntity<ChatDTO> createMatch(@RequestBody MatchRequestDTO matchRequestDto) {
+        ChatDTO chatDTO = matchService.createMatch(matchRequestDto);
+        return ResponseEntity.ok(chatDTO);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteMatch(
+            @RequestParam Long senderId,
+            @RequestParam Long receiverId
+    ) {
+        matchService.deleteMatch(senderId, receiverId);
+        return ResponseEntity.ok("매칭이 삭제되었습니다.");
     }
 }

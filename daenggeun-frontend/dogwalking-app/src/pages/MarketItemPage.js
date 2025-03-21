@@ -83,22 +83,21 @@ function MarketItemPage() {
   // 댓글 삭제 함수
   const handleDeleteComment = async (commentId) => {
     const userId = localStorage.getItem("userId");
-
+  
     if (!userId) {
       alert("로그인이 필요합니다.");
       return;
     }
-
+  
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
-
+  
     try {
-      await axios.delete(
-        `http://localhost:8080/api/market-comments/${commentId}`,
-        {
-          params: { userId },
-        }
-      );
-
+      // ✅ 댓글 삭제 API 호출로 수정
+      await axios.delete(`http://localhost:8080/api/market-comments/${commentId}`, {
+        params: { userId: Number(userId) },
+      });
+  
+      // 삭제된 댓글만 제거
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     } catch (err) {
       console.error("❌ 댓글 삭제 실패:", err);

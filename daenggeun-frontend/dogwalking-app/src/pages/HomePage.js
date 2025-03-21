@@ -123,11 +123,11 @@ function HomePage() {
           </div>
 
           <div className="features-grid">
-            <Link to="/calendar" className="feature-card">
+            <Link to="/find-friend" className="feature-card">
               <div className="feature-icon-container">
-                <span className="feature-icon">📅</span>
+                <span className="feature-icon">🦴</span>
               </div>
-              <h3 className="feature-title">일정 관리</h3>
+              <h3 className="feature-title">댕근 찾기</h3>
               <p className="feature-description">
                 산책 일정과 할 일을 관리하고, 약속을 잡아보세요.
               </p>

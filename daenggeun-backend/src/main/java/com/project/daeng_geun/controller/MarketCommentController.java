@@ -50,13 +50,13 @@ public class MarketCommentController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{commentId}")
-    public ResponseEntity<Void> updateComment(
-            @PathVariable Long commentId,
-            @RequestBody MarketCommentDTO request
-    ) {
-        commentService.updateComment(commentId, request.getUserId(), request.getContent());
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/{commentId}")
+//    public ResponseEntity<Void> updateComment(
+//            @PathVariable Long commentId,
+//            @RequestBody MarketCommentDTO request
+//    ) {
+//        commentService.updateComment(commentId, request.getUserId(), request.getContent());
+//        return ResponseEntity.ok().build();
+//    }
 
 }

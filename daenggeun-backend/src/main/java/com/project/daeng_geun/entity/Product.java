@@ -66,4 +66,7 @@ public class Product {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<MarketComment> comments;
+
 }

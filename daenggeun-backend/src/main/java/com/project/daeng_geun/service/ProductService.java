@@ -3,6 +3,7 @@ package com.project.daeng_geun.service;
 import com.project.daeng_geun.dto.ProductDto;
 import com.project.daeng_geun.entity.Product;
 import com.project.daeng_geun.entity.User;
+import com.project.daeng_geun.repository.MarketCommentRepository;
 import com.project.daeng_geun.repository.ProductRepository;
 import com.project.daeng_geun.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +28,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final MarketCommentRepository marketCommentRepository;
 
     // ✅ 상품 등록 (이미지 업로드 포함)
     @Transactional
@@ -35,11 +37,14 @@ public class ProductService {
         User seller = userRepository.findById(productDto.getSellerId())
                 .orElseThrow(() -> new RuntimeException("판매자 정보를 찾을 수 없습니다."));
 
+        log.info("🔥 상품 등록 요청: sellerId={}, title={}", productDto.getSellerId(), productDto.getTitle());
+
         Product product = Product.builder()
                 .title(productDto.getTitle())
                 .price(productDto.getPrice())
                 .description(productDto.getDescription())
                 .image(imageUrl)
+                .views(productDto.getViews())
                 .seller(seller)
                 .location(seller.getLocation())
                 .createdAt(productDto.getCreatedAt())
@@ -63,12 +68,6 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다."));
 
-//        productRepository.incrementViews(productId);
-//         ✅ 업데이트된 값 다시 조회 후 반환
-//        Product updatedProduct = productRepository.findById(product.getId()).orElse(null);
-
-
-//        // ✅ 조회수 증가
         if (!product.isViewedRecently()) { // ✅ 최근에 조회된 상품인지 확인
             product.setViews(product.getViews() + 1);
             product.setLastViewedTime(System.currentTimeMillis()); // ✅ 마지막 조회 시간 저장
@@ -78,14 +77,18 @@ public class ProductService {
         return ProductDto.fromEntity(product);
     }
 
-    // ✅ 상품 삭제
     @Transactional
-    public void deleteProduct(Long productId) {
-        if (!productRepository.existsById(productId)) {
-            throw new EntityNotFoundException("해당 상품을 찾을 수 없습니다. ID: " + productId);
+    public void deleteProduct(Long productId, Long userId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
+
+        if (!product.getSeller().getId().equals(userId)) {
+            throw new IllegalArgumentException("본인만 삭제할 수 있습니다.");
         }
-        productRepository.deleteById(productId);
+
+        productRepository.delete(product); // ✅ cascade = REMOVE에 의해 댓글도 삭제됨
     }
+
     // 상품 수정
     @Transactional
     public ProductDto updateProduct(Long id, ProductDto productDto, Long userId, MultipartFile file) throws IOException {

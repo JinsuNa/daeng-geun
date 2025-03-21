@@ -15,18 +15,11 @@ const FindFriendPage = () => {
   const [showMatchedDogs, setShowMatchedDogs] = useState(false);
   const [matchedDogs, setMatchedDogs] = useState([]);
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   // 상태 관리 부분에 selectedDog 상태 추가
   const [selectedDog, setSelectedDog] = useState(null);
   const [showDogPopup, setShowDogPopup] = useState(false);
-
-  useEffect(() => {
-    if (!userId) {
-      setTimeout(() => navigate("/login"), 0);
-      return;
-    }
-  });
 
   useEffect(() => {
     fetchRandomUsers();
@@ -97,42 +90,40 @@ const FindFriendPage = () => {
   };
 
   const handleChat = async (dogId) => {
-    try {
-      const chatRoom = await chatAPI.createChatRoom(userId, dogId);
+    try{
+      const chatRoom = await chatAPI.createChatRoom(userId,dogId)
       navigate(`/chat?chatRoomId=${chatRoom.id}&senderId=${userId}`);
-    } catch (error) {
-      console.error("채팅방 생성 실패: ", error);
+    }catch(error){
+      console.error("채팅방 생성 실패: ",error);
+      
     }
   };
 
-  const handleDeleteChat = async (receiverId) => {
+  const handleDeleteChat = async (receiverId) =>{
     try {
       // ✅ 1. senderId와 receiverId로 chatRoomId 조회
-      const response = await axios.get(
-        `http://localhost:8080/api/chat/getChatRoomId`,
-        {
-          params: { senderId: userId, receiverId },
-        }
-      );
+      const response = await axios.get(`http://localhost:8080/api/chat/getChatRoomId`, {
+          params: { senderId: userId, receiverId }
+      });
 
       if (response.status === 200 && response.data) {
-        const chatRoomId = response.data;
-        // 채팅방 삭제 API 호출
-        await chatAPI.deleteChatRoom(chatRoomId);
+          const chatRoomId = response.data;
+          // 채팅방 삭제 API 호출
+          await chatAPI.deleteChatRoom(chatRoomId);
       } else {
         console.log("채팅방이 존재하지 않음");
       }
     } catch (error) {
       console.error("매칭 또는 채팅방 삭제 실패:", error);
     }
-  };
+  }
 
   // 삭제 기능
   const handleDeleteMatch = async (receiverId) => {
     try {
       await deleteMatch(receiverId); // await 사용 가능
       alert("매칭이 삭제되었습니다.");
-      await handleDeleteChat(receiverId);
+      await handleDeleteChat(receiverId)
       fetchMatchedDogs(); // 최신 매칭 목록 다시 불러오기
     } catch (error) {
       alert("매칭 삭제에 실패했습니다.");

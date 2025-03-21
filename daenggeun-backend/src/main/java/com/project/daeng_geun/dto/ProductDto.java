@@ -17,15 +17,15 @@ public class ProductDto {
     private String title;
     private Integer price;
     private String description;
+    private String location;  // ✅ 사용자 위치 정보 추가
     private String image;
+    private int views;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long sellerId;
     private String sellerName;
-    private String location;  // ✅ 사용자 위치 정보 추가
     private String sellerNickname; // ✅ 판매자의 닉네임 추가
     private String sellerImage;    // ✅ 판매자의 프로필 이미지 추가
-    private Integer views;
 
     // ✅ Entity → DTO 변환 메서드
     public static ProductDto fromEntity(Product product) {

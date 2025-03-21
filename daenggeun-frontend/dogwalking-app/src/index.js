@@ -9,11 +9,11 @@ import { BrowserRouter } from "react-router-dom"
 // BrowserRouter로 App 컴포넌트를 감싸 라우팅 기능 활성화
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )
 
 reportWebVitals()

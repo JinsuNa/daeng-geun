@@ -12,7 +12,7 @@
  */
 
 import { useState, useEffect } from "react"
-import "../styles/Community.css"
+import "../styles/exhibition.css"
 
 function ExhibitionPage() {
   // 상태 관리
@@ -44,48 +44,52 @@ function ExhibitionPage() {
     const dummyExhibitions = [
       {
         id: 1,
-        title: "2023 서울 반려동물 박람회",
+        title: "2024 서울펫쇼",
         description:
-          "다양한 반려동물 용품과 서비스를 한자리에서 만나볼 수 있는 박람회입니다. 최신 트렌드와 혁신적인 제품들을 경험해보세요.",
-        startDate: "2023-11-10",
-        endDate: "2023-11-15",
-        location: "서울 코엑스",
-        image: "https://njs-s3-bucket.s3.ap-southeast-2.amazonaws.com/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C.jpg",
+          "‘애완’이 아닌 ‘반려’하는 가족구성원을 위한 행사로 반려동물을 위하는 마음으로 함께 동반하여 참여하는 행사",
+        startDate: "2025-3-10",
+        endDate: "2025-4-21",
+        location: "일산 킨텍스",
+        image: "https://www.kintex.com/imageView.do?atchmnflNo=467931&fileseq=1",
+        url: "https://www.kintex.com/web/ko/event/view.do?seq=2024037694",
         status: "current",
         tags: ["반려동물용품", "건강", "식품"],
       },
       {
         id: 2,
-        title: "강아지 건강 페스티벌",
+        title: "케이펫페어 세텍",
         description:
-          "강아지의 건강을 위한 다양한 정보와 제품을 소개하는 페스티벌입니다. 전문가의 건강 상담도 받아보세요.",
-        startDate: "2023-11-20",
-        endDate: "2023-11-25",
-        location: "부산 벡스코",
-        image: "https://njs-s3-bucket.s3.ap-southeast-2.amazonaws.com/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C.jpg",
+          "따스한 봄바람처럼 새로움이 가득한 순간, 봄나들이를 위한 완벽한 산책 아이템 총집합",
+        startDate: "2025-3-16",
+        endDate: "2025-4-3",
+        location: "세텍 학여울역",
+        url: "https://k-pet.co.kr/information/scheduled-list/2025_kpet_setec/",
+        image: "https://d5bvmdkxgb6q.cloudfront.net/wp-content/uploads/2024/12/02113013/25%EC%BC%80%EC%9D%B4%ED%8E%AB%ED%8E%98%EC%96%B4-%EB%A9%94%EA%B0%80%EC%A3%BC-%ED%82%A4%EB%B9%84%EC%A3%BC%EC%96%BC_297X420mm_3.%EC%84%B8%ED%85%8D-1200x1697.jpg",
         status: "current",
         tags: ["건강검진", "영양", "운동"],
       },
       {
         id: 3,
-        title: "2024 펫 케어 엑스포",
+        title: "2025 궁디팡팡 캣페스타 BUSAN 티켓(2차)",
         description: "반려동물 케어에 관한 모든 것을 다루는 엑스포입니다. 최신 케어 제품과 서비스를 만나보세요.",
-        startDate: "2024-01-15",
-        endDate: "2024-01-20",
+        startDate: "2025-03-20",
+        endDate: "2025-03-30",
         location: "서울 코엑스",
-        image: "https://njs-s3-bucket.s3.ap-southeast-2.amazonaws.com/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C.jpg",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqz5Xe0YFHLfos0Xkqd5FnE3Xda1yx4kJWrg&s",
+        url:"https://gdppcat.com/ticket/ticket_detail/36",
         status: "current",
         tags: ["그루밍", "미용", "케어"],
       },
       {
         id: 4,
-        title: "반려동물 행동교정 세미나",
+        title: "대전펫 & 캣쇼",
         description:
           "반려동물의 행동 문제를 해결하기 위한 전문가들의 세미나입니다. 실용적인 팁과 교육 방법을 배워가세요.",
-        startDate: "2024-02-05",
-        endDate: "2024-02-07",
+        startDate: "2025-05-09",
+        endDate: "2025-05-11",
         location: "대전 컨벤션센터",
-        image: "/placeholder.svg?height=400&width=600",
+        image: "https://www.pet-show.co.kr/img_up/shop_pds/petshow/build/option/2025--po-seu-teo-05--dae-jeon10801731045751.jpg",
+        url:"https://www.pet-show.co.kr/page/page139",
         status: "upcoming",
         tags: ["교육", "행동교정", "훈련"],
       },
@@ -142,7 +146,7 @@ function ExhibitionPage() {
           </div>
         </div>
         <div className="card-footer">
-          <button className="btn btn-primary">자세히 보기</button>
+          <button className="btn btn-primary"><a href={exhibition.url}>자세히 보기</a> </button>
         </div>
       </div>
     )

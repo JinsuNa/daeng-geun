@@ -46,21 +46,22 @@ public class MarketCommentService {
         if (!comment.getUser().getId().equals(userId)) {
             throw new SecurityException("본인 댓글만 삭제할 수 있습니다.");
         }
-
+        // ✅ 댓글 먼저 삭제
+//        commentRepository.deleteByProductId(commentId);
         commentRepository.delete(comment);
     }
 
-    public void updateComment(Long commentId, Long userId, String content) {
-        MarketComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
-
-        if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("본인만 댓글을 수정할 수 있습니다.");
-        }
-
-        comment.setContent(newContent);
-        comment.setUpdatedAt(LocalDateTime.now());
-
-        commentRepository.save(comment);
-    }
+//    public void updateComment(Long commentId, Long userId, String content) {
+//        MarketComment comment = commentRepository.findById(commentId)
+//                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+//
+//        if (!comment.getUser().getId().equals(userId)) {
+//            throw new IllegalArgumentException("본인만 댓글을 수정할 수 있습니다.");
+//        }
+//
+//        comment.setContent(newContent);
+//        comment.setUpdatedAt(LocalDateTime.now());
+//
+//        commentRepository.save(comment);
+//    }
 }

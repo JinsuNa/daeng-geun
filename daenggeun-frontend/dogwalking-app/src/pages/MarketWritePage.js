@@ -44,6 +44,7 @@ function MarketWritePage() {
       return;
     }
     const userId = localStorage.getItem("userId");
+    console.log(userId);
     setIsSubmitting(true); // ✅ 등록 중 상태 활성화
     setError(""); // ✅ 기존 에러 초기화
 

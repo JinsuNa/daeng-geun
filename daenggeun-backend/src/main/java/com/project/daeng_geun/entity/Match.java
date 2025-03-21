@@ -29,7 +29,7 @@ public class Match {
     @JsonIgnoreProperties({"sentMessages", "receivedMessages", "hibernateLazyInitializer"}) // 🚀 receiver 정보를 포함하도록 설정
     private User receiver;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = true, columnDefinition = "TEXT DEFAULT ''") // 기본값 추가
     private String message;
 
     @Column(nullable = false)

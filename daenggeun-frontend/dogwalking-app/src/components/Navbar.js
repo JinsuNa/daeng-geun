@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import "../styles/Navbar.css"
 
 function Navbar({ isAuthenticated,onLogout }) {
@@ -15,63 +15,8 @@ function Navbar({ isAuthenticated,onLogout }) {
   const [notifications, setNotifications] = useState([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
-
-  // 컴포넌트 마운트 시 알림 데이터 로드
-  useEffect(() => {
-    if (isAuthenticated) {
-      // 실제 구현 시에는 백엔드에서 알림 데이터를 가져오는 API 호출
-      // 예시:
-      /*
-      const fetchNotifications = async () => {
-        try {
-          const response = await axios.get('http://localhost:8080/api/notifications', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          
-          setNotifications(response.data);
-          setUnreadCount(response.data.filter(notification => !notification.read).length);
-        } catch (error) {
-          console.error('알림 데이터 가져오기 실패:', error);
-        }
-      };
-      
-      fetchNotifications();
-      */
-
-      // 임시 더미 데이터 (백엔드 연동 전까지만 사용)
-      const dummyNotifications = [
-        {
-          id: 1,
-          type: "chat",
-          message: "초코님이 새 메시지를 보냈습니다.",
-          time: "10분 전",
-          read: false,
-          link: "/chat",
-        },
-        {
-          id: 2,
-          type: "comment",
-          message: "강아지 산책 코스 추천해주세요 글에 새 댓글이 달렸습니다.",
-          time: "30분 전",
-          read: false,
-          link: "/community/post/1",
-        },
-        {
-          id: 3,
-          type: "chat",
-          message: "몽이님이 새 메시지를 보냈습니다.",
-          time: "1시간 전",
-          read: true,
-          link: "/chat",
-        },
-      ]
-
-      setNotifications(dummyNotifications)
-      setUnreadCount(dummyNotifications.filter((notification) => !notification.read).length)
-    }
-  }, [isAuthenticated])
+  const userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
 
   // 로그인을 하면 로컬스토리지에 회원정보가 jwt토근으로 받아 json으로 변환해주는 코드
   useEffect(() => {
@@ -81,10 +26,17 @@ function Navbar({ isAuthenticated,onLogout }) {
     }
   }, [isAuthenticated]);
 
+  // useEffect(() => {
+  //   if (!userId) {
+  //     navigate("/login"); // 🚀 로그인 안 했으면 로그인 페이지로 이동
+  //   }
+  // }, [userId, navigate]);
+
   // 메뉴 토글 함수
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
+
 
   // 알림 읽음 표시 함수
   const markAsRead = (id) => {
@@ -191,6 +143,7 @@ function Navbar({ isAuthenticated,onLogout }) {
                 >
                   {item.name}
                 </Link>
+              
               </li>
             ))}
           </ul>

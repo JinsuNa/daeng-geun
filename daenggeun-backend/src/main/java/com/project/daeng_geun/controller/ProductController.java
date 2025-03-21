@@ -20,6 +20,7 @@ public class ProductController {
     private final ProductService productService;
 
     // ✅ 1. 상품 등록
+
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(
             @RequestPart("product") ProductDto productDto,
@@ -42,7 +43,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ResponseEntity<?> updateProduct(
-            @PathVariable Long id,
+            @PathVariable("productId") Long productId,
             @RequestParam Long userId,
             @RequestParam("title") String title,
             @RequestParam("price") Integer price,
@@ -57,16 +58,19 @@ public class ProductController {
         productDto.setLocation(location);
 
         // ✅ Service 메서드 호출 시 MultipartFile 추가
-        ProductDto updatedProduct = productService.updateProduct(id, productDto, userId, imageFile);
+        ProductDto updatedProduct = productService.updateProduct(productId, productDto, userId, imageFile);
 
         return ResponseEntity.ok(updatedProduct);
     }
 
     // ✅ 5. 상품 삭제
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
-        productService.deleteProduct(productId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable Long productId,
+            @RequestParam Long userId) {
+
+        productService.deleteProduct(productId, userId);
+        return ResponseEntity.ok().build();
     }
 
 }

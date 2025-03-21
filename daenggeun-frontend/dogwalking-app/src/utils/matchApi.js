@@ -1,6 +1,11 @@
 import axios from "axios"
 
+
 const API_BASE_URL="http://localhost:8080/api/match"
+
+
+
+
 
 // 랜덤한 카드 두개 가져오기
 export const getRandomUsers =() => axios.get(`${API_BASE_URL}/random`)
@@ -37,7 +42,7 @@ export const getChatHistory = async (senderId,receiverId) =>{
  */
 export const sendMessage = async (senderId, receiverId, message) => {
     try {
-      const response = await axios.post(`${BASE_URL}/send`, {
+      const response = await axios.post(`${API_BASE_URL}/send`, {
         senderId,
         receiverId,
         message,
@@ -48,3 +53,62 @@ export const sendMessage = async (senderId, receiverId, message) => {
       return null;
     }
   };
+
+  const getSenderId = () =>{
+    return localStorage.getItem("userId")
+  }
+
+  // 매칭 리스트 조회
+  export const fetchMatches = async () => {
+    const senderId = getSenderId();
+    if (!senderId) {
+        return;
+    }
+
+    try {
+        const response = await axios.get(`${API_BASE_URL}/doglist`, { params: { senderId } });
+        console.log("✅ 매칭 리스트 조회 성공:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("❌ 매칭 리스트 조회 실패:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+  // 새로운 매칭 생성
+  export const createMatch = async (receiverId) => {
+    const senderId = getSenderId();
+    if (!senderId) {
+        console.error("❌ 로그인된 사용자 ID를 찾을 수 없습니다.");
+        return;
+    }
+
+    try {
+        const response = await axios.post(API_BASE_URL, { senderId, receiverId });
+        console.log("✅ 매칭 생성 성공:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("❌ 매칭 생성 실패:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// 매칭 삭제
+
+export const deleteMatch = async (receiverId) => {
+  const senderId = getSenderId();
+  if (!senderId) {
+      console.error("❌ 로그인된 사용자 ID를 찾을 수 없습니다.");
+      return;
+  }
+
+  try {
+      const response = await axios.delete(API_BASE_URL, { params: { senderId, receiverId } });
+      console.log("✅ 매칭 삭제 성공:", response.data);
+      return response.data;
+  } catch (error) {
+      console.error("❌ 매칭 삭제 실패:", error.response?.data || error.message);
+      throw error;
+  }
+};
+
