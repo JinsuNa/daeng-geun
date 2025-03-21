@@ -17,7 +17,7 @@ function MarketPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  
+
   // 초기 로그인 페이지 항시
   useEffect(() => {
     if (!userId) {
@@ -163,18 +163,19 @@ function MarketPage() {
               <div className="product-info">
                 <h3 className="product-title">{product?.title}</h3>
                 <p className="product-price">{formatPrice(product?.price)}원</p>
+
                 <div className="product-meta">
-                  <div className="product-location">
-                    <span className="product-location-icon">📍</span>
-                    <span>{product?.location}</span>
+                  <div className="product-meta-item">
+                    <span className="meta-icon">📍</span>
+                    <span>{product?.location || "위치 미지정"}</span>
                   </div>
-                  <div className="product-seller">
-                    <span className="product-seller-icon">👤</span>
-                    <span>{product?.sellerNickname}</span>
+                  <div className="product-meta-item">
+                    <span className="meta-icon">👤</span>
+                    <span>{product?.sellerNickname || "알 수 없음"}</span>
                   </div>
-                  <div className="product-views">
-                    <span className="product-views-icon">👀</span>
-                    <p>조회수: {product?.views}회</p>
+                  <div className="product-meta-item">
+                    <span className="meta-icon">👀</span>
+                    <span>조회수: {product?.views}회</span>
                   </div>
                 </div>
               </div>
