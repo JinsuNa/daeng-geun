@@ -1,9 +1,8 @@
 package com.project.daeng_geun.controller;
 
-import com.project.daeng_geun.dto.ProductDto;
+import com.project.daeng_geun.dto.ProductDTO;
 import com.project.daeng_geun.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,22 +21,22 @@ public class ProductController {
     // ✅ 1. 상품 등록
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(
-            @RequestPart("product") ProductDto productDto,
+    public ResponseEntity<ProductDTO> createProduct(
+            @RequestPart("product") ProductDTO productDto,
             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
         return ResponseEntity.ok(productService.createProduct(productDto, image));
     }
 
     // ✅ 2. 전체 상품 목록 조회
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> products = productService.getAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long productId) {
         System.out.println("👉 Product ID 요청됨: " + productId); // 디버깅 로그
-        ProductDto product = productService.getProductById(productId);
+        ProductDTO product = productService.getProductById(productId);
         return ResponseEntity.ok(product);
     }
 
@@ -51,14 +50,14 @@ public class ProductController {
             @RequestParam("location") String location,
             @RequestParam(value = "image", required = false) MultipartFile imageFile) throws IOException { // ✅ 파일 추가
 
-        ProductDto productDto = new ProductDto();
+        ProductDTO productDto = new ProductDTO();
         productDto.setTitle(title);
         productDto.setPrice(price);
         productDto.setDescription(description);
         productDto.setLocation(location);
 
         // ✅ Service 메서드 호출 시 MultipartFile 추가
-        ProductDto updatedProduct = productService.updateProduct(productId, productDto, userId, imageFile);
+        ProductDTO updatedProduct = productService.updateProduct(productId, productDto, userId, imageFile);
 
         return ResponseEntity.ok(updatedProduct);
     }

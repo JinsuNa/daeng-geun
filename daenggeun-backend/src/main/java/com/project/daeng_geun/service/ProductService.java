@@ -1,12 +1,11 @@
 package com.project.daeng_geun.service;
 
-import com.project.daeng_geun.dto.ProductDto;
+import com.project.daeng_geun.dto.ProductDTO;
 import com.project.daeng_geun.entity.Product;
 import com.project.daeng_geun.entity.User;
 import com.project.daeng_geun.repository.MarketCommentRepository;
 import com.project.daeng_geun.repository.ProductRepository;
 import com.project.daeng_geun.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +30,7 @@ public class ProductService {
 
     // ✅ 상품 등록 (이미지 업로드 포함)
     @Transactional
-    public ProductDto createProduct(ProductDto productDto, MultipartFile file) throws IOException {
+    public ProductDTO createProduct(ProductDTO productDto, MultipartFile file) throws IOException {
         String imageUrl = (file != null) ? s3Service.uploadFile(file) : null;
         User seller = userRepository.findById(productDto.getSellerId())
                 .orElseThrow(() -> new RuntimeException("판매자 정보를 찾을 수 없습니다."));
@@ -50,21 +48,21 @@ public class ProductService {
                 .createdAt(productDto.getCreatedAt())
                 .build();
 
-        return ProductDto.fromEntity(productRepository.save(product));
+        return ProductDTO.fromEntity(productRepository.save(product));
     }
 
     // ✅ 전체 상품 목록 조회
     @Transactional(readOnly = true)
-    public  List<ProductDto> getAllProducts() {
+    public  List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
-                .map(ProductDto::fromEntity)
+                .map(ProductDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
     // ✅ 특정 상품 조회 (ID 기준)
     @Transactional
-    public ProductDto getProductById(Long productId) {
+    public ProductDTO getProductById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다."));
 
@@ -74,7 +72,7 @@ public class ProductService {
             productRepository.save(product);
         }
 
-        return ProductDto.fromEntity(product);
+        return ProductDTO.fromEntity(product);
     }
 
     @Transactional
@@ -91,7 +89,7 @@ public class ProductService {
 
     // 상품 수정
     @Transactional
-    public ProductDto updateProduct(Long id, ProductDto productDto, Long userId, MultipartFile file) throws IOException {
+    public ProductDTO updateProduct(Long id, ProductDTO productDto, Long userId, MultipartFile file) throws IOException {
         // 1️⃣ 상품 존재 여부 확인
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
@@ -127,7 +125,7 @@ public class ProductService {
         productRepository.save(product);
 
         // 7️⃣ 업데이트된 상품 DTO 반환
-        return ProductDto.fromEntity(product);
+        return ProductDTO.fromEntity(product);
     }
 
 

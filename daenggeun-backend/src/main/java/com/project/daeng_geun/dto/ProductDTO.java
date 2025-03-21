@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductDto {
+public class ProductDTO {
 
     private Long id;
     private String title;
@@ -28,8 +28,8 @@ public class ProductDto {
     private String sellerImage;    // ✅ 판매자의 프로필 이미지 추가
 
     // ✅ Entity → DTO 변환 메서드
-    public static ProductDto fromEntity(Product product) {
-        return ProductDto.builder()
+    public static ProductDTO fromEntity(Product product) {
+        return ProductDTO.builder()
                 .id(product.getId())
                 .title(product.getTitle())
                 .price(product.getPrice())
