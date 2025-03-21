@@ -17,10 +17,10 @@ public class CommentController {
 
     // 게시글별 댓글 조회
 
-    @GetMapping("/post/{postId}")
-    public List<CommentDTO> getCommentsByPostId(@PathVariable Long postId) {
-        return commentService.getCommentsByPostId(postId);
-    }
+//    @GetMapping("/post/{postId}")
+//    public List<CommentDTO> getCommentsByPostId(@PathVariable Long postId) {
+//        return commentService.getCommentsByPostId(postId);
+//    }
 
     // 댓글 작성
 

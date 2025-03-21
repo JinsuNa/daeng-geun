@@ -26,7 +26,6 @@ public class Match {
     private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", nullable = false)
     @JsonIgnoreProperties({"sentMessages", "receivedMessages", "hibernateLazyInitializer"}) // 🚀 receiver 정보를 포함하도록 설정
     private User receiver;
 

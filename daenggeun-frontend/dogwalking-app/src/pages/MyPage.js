@@ -1,7 +1,8 @@
 /**
  * 마이페이지 컴포넌트
  *
- * 사용자의 닉네임, 프로필 이미지, 반려견 정보를 관리할 수 있는 기능을 제공합니다.
+ * 이 컴포넌트는 사용자의 개인 정보, 반려견 정보, 작성한 게시글 등을 관리할 수 있는 기능을 제공합니다.
+ * 관리자의 경우 회원 관리와 게시글 관리 기능을 제공합니다.
  */
 
 import { useState, useEffect } from "react";
@@ -23,7 +24,7 @@ function MyPage() {
 
   // ✅ formData 초기 상태
   const [formData, setFormData] = useState({
-    username: "",
+    nickname: "",
     petName: "",
     petBreed: "",
     petAge: "",
@@ -34,8 +35,7 @@ function MyPage() {
   // ✅ 사용자 정보 불러오기
   useEffect(() => {
     if (!userId) {
-      alert("로그인이 필요합니다.");
-      navigate("/login");
+      setTimeout(()=> navigate("/login"),0)
       return;
     }
 
@@ -44,7 +44,7 @@ function MyPage() {
       .then((response) => {
         setUser(response.data);
         setFormData({
-          username: response.data.username || "",
+          nickname: response.data.nickname || "",
           petName: response.data.petName || "",
           petBreed: response.data.petBreed || "",
           petAge: response.data.petAge || "",
@@ -109,12 +109,12 @@ function MyPage() {
     setIsSubmitting(true);
     try {
       await axios.put(`${BASE_URL}/${userId}`, {
-        username: formData.username,
+        nickname: formData.nickname,
         image: imagePreview,
       });
 
-      setUser((prevUser) => ({ ...prevUser, username: formData.username }));
-      localStorage.setItem("nickname",formData.username)
+      setUser((prevUser) => ({ ...prevUser, nickname: formData.nickname }));
+      localStorage.setItem("nickname",formData.nickname)
       window.location.reload()
       alert("사용자 정보가 업데이트되었습니다.");
     } catch (error) {
@@ -177,8 +177,8 @@ function MyPage() {
             <label>닉네임</label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="nickname"
+              value={formData.nickname}
               onChange={handleChange}
             />
           </div>

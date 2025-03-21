@@ -13,19 +13,18 @@ function MarketPage() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8; // 한 페이지당 10개 표시
-  const userId = localStorage.getItem("userId");
-  const navigate = useNavigate();
+  const userId = localStorage.getItem("userId")
+  const navigate = useNavigate()
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+// 초기 로그인 페이지 항시
+useEffect(()=>{
+  if(!userId){
+setTimeout(()=>navigate('/login'),0);
+return;
+  }
+})
   
-  // 초기 로그인 페이지 항시
-  useEffect(() => {
-    if (!userId) {
-      setTimeout(() => navigate("/login"), 0);
-      return;
-    }
-  });
-
   useEffect(() => {
     fetch("http://localhost:8080/api/products")
       .then((response) => {
@@ -42,7 +41,6 @@ function MarketPage() {
         );
         setProducts(sortedData);
         setFilteredProducts(sortedData);
-        setProduct(data);
         setLoading(false);
       })
       .catch((error) => {
@@ -50,31 +48,21 @@ function MarketPage() {
         setLoading(false);
         console.log("상품불러오는 response.data error:", error);
       });
-  }, [id]);
+  }, []);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        // 🔥 제품 정보 가져오기
-        const response = await fetch(
-          `http://localhost:8080/api/products/${product?.id}`
-        );
-        const data = await response.json();
+    fetch(`http://localhost:8080/api/products/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("✅ 조회수 증가 확인:", data.views); // 🔥 디버깅용 로그
         setProduct(data);
-
-        // 🎯 조회수 증가 API 별도 호출 (필요한 경우)
-        await fetch(`http://localhost:8080/api/products/${product?.id}/views`, {
-          method: "POST", // 혹은 "PATCH" (서버 요구 사항에 맞게)
-        });
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      }
-    };
-
-    if (id) {
-      fetchProduct();
-    }
+      })
+      .catch((error) => console.error("Error fetching product:", error));
   }, [id]); // ✅ `id`가 변경될 때만 실행 (초기 1회 실행)
+
+
+
+  
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -145,7 +133,7 @@ function MarketPage() {
       ) : error ? (
         <div className="error-message">{error}</div>
       ) : displayedProducts.length > 0 ? (
-        <div className="product-grid">
+        <div className="product-grid" >
           {displayedProducts.map((product) => (
             <Link
               key={product.id}

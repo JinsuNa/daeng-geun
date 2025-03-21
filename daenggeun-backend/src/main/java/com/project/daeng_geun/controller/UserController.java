@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 
@@ -24,7 +25,7 @@ public class UserController {
 
     //  회원가입 API
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestPart("user") UserDTO userDTO, @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<Map<String, Object>> register(@RequestPart("user") UserDTO userDTO, @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
         return userService.register(userDTO, image);
     }
 

@@ -49,7 +49,7 @@ public class MyPageService {
 
     // 🔹 사용자 정보 업데이트 (null 값 체크)
     private void updateUserFields(User user, UserDTO userDTO) {
-        if (userDTO.getUsername() != null) user.setNickname(userDTO.getUsername());
+        if (userDTO.getNickname() != null) user.setNickname(userDTO.getNickname());
         if (userDTO.getImage() != null) user.setImage(userDTO.getImage());
     }
 

@@ -14,7 +14,7 @@ public class UserDTO {
     private String email;
     private String password;
     private String repeatPassword;
-    private String username;
+    private String nickname;
     private String phone;
     private String address;
     private String location;
@@ -24,15 +24,17 @@ public class UserDTO {
     private String petGender;
     private String petPersonality;
     private String image;
+    private String profileImage;
 
     public static UserDTO fromEntity(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .username(user.getNickname())
+                .nickname(user.getNickname())
                 .address(user.getAddress())
                 .location(user.getLocation())
+                .image(user.getImage())
                 .petName(user.getPetName())
                 .petBreed(user.getPetBreed())
                 .petAge(user.getPetAge())
@@ -46,7 +48,8 @@ public class UserDTO {
         return User.builder()
                 .email(this.email)
                 .password(this.password)
-                .nickname(this.username)
+                .nickname(this.nickname)
+                .image(this.image)
                 .address(this.address)
                 .location(this.location)
                 .petName(this.petName)

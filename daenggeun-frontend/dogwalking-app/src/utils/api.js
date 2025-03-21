@@ -18,7 +18,7 @@ const api = axios.create({
 // 로그인 API
 export const loginUser = async (formData) => {
   try {
-    const response = axios.post(`${API_BASE_URL}/login`, formData);
+    const response = await axios.post(`${API_BASE_URL}/login`, formData);
     return (await response).data;
   } catch (error) {
     throw error.response ? error.response.data : error;
@@ -67,4 +67,3 @@ export const checkEmail = async (email) => {
 
 };
 
-export default api;

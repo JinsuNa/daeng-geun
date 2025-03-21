@@ -1,171 +1,295 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import "../styles/Community.css"
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../styles/MarketItem.css"; // 스타일 추가
 
 function MarketItemPage() {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams(); // URL에서 상품 ID 가져오기
+  const productId = Number(id);
+  const navigate = useNavigate();
 
   // 상태 관리
-  const [item, setItem] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [product, setProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // 댓글 관리
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
 
-  // 상품 데이터 로드 (실제로는 API에서 가져올 것)
   useEffect(() => {
-    // 실제 구현 시에는 API 호출로 대체
-    // 예시:
-    /*
-    const fetchItem = async () => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/market-comments/${productId}`
+        );
+        console.log("📦 댓글 응답 데이터:", res.data, typeof res.data);
+
+        const parsedData =
+          typeof res.data === "string" ? JSON.parse(res.data) : res.data;
+
+        setComments(parsedData); // ✅ 확실하게 배열로 세팅
+      } catch (error) {
+        console.error("❌ 댓글 불러오기 실패:", error);
+      }
+    };
+
+    if (productId) fetchComments();
+  }, [productId]);
+  //댓글 작성 함수
+  const handleAddComment = async () => {
+    const userId = localStorage.getItem("userId");
+    const content = newComment.trim();
+
+    if (!userId) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    if (!content) return;
+
+    try {
+      await axios.post("http://localhost:8080/api/market-comments", {
+        productId,
+        userId: Number(userId),
+        content,
+      });
+
+      setNewComment("");
+
+      const res = await axios.get(
+        `http://localhost:8080/api/market-comments/${productId}`
+      );
+
+      let parsed = res.data;
+      if (typeof res.data === "string") {
+        try {
+          parsed = JSON.parse(res.data); // 여기서 실패하면 catch로 넘어감
+        } catch (jsonError) {
+          console.error("❌ JSON 파싱 실패:", jsonError);
+          alert("서버로부터 잘못된 댓글 응답이 왔습니다.");
+          return;
+        }
+      }
+
+      setComments(parsed);
+    } catch (error) {
+      console.error("❌ 댓글 불러오기 실패:", error);
+    }
+  };
+
+  // 댓글 삭제 함수
+  const handleDeleteComment = async (commentId) => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/market-comments/${commentId}`,
+        {
+          params: { userId },
+        }
+      );
+
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    } catch (err) {
+      console.error("❌ 댓글 삭제 실패:", err);
+      alert("본인 댓글만 삭제할 수 있습니다.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!productId || isNaN(productId)) {
+        setError("유효하지 않은 상품 ID입니다.");
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:8080/api/market/items/${id}`);
-        setItem(response.data);
-      } catch (error) {
-        console.error('상품 데이터 가져오기 실패:', error);
-        setError('상품 정보를 불러오는데 실패했습니다.');
+        console.log(`Fetching product with ID: ${productId}`);
+
+        const response = await axios.get(
+          `http://localhost:8080/api/products/${productId}`
+        );
+
+        setProduct(response.data);
+      } catch (err) {
+        console.error("❌ 상품 데이터 가져오기 실패:", err);
+        setError("상품 정보를 찾을 수 없습니다.");
       } finally {
         setIsLoading(false);
       }
     };
-    
-    fetchItem();
-    */
 
-    // 임시 구현 (백엔드 연동 전까지만 사용)
-    setTimeout(() => {
-      // 임시 상품 데이터
-      const dummyItem = {
-        id: Number.parseInt(id),
-        title: "로얄 캐닌 미니 인도어 시니어 3키로 2개(가격내림)",
-        price: 72000,
-        location: "서울 역북동",
-        description: `며칠전에 배송 받았는데 잘못 주문했어요...
-3키로짜리 두개네 하나를 묶어버려서 반품이 안될것같아 판매합니다ㅠㅠ
-지퍼팩으로 되어있어 새거나 다름없어요...
-한번도 먹이지 않았습니다당🤣🤣🤣
-구매가보다 저렴하게 내놔요😇😊
-가까우면 가져다 드릴게요!`,
-        image: "/placeholder.svg?height=600&width=600",
-        createdAt: "2024-03-07",
-        seller: {
-          name: "취미있는사람",
-          avatar: "/placeholder.svg?height=100&width=100",
-          temperature: 43.0,
-        },
-      }
-
-      setItem(dummyItem)
-      setIsLoading(false)
-    }, 500)
-  }, [id])
-
-  // 채팅하기 버튼 클릭 핸들러
-  const handleChatClick = () => {
-    navigate(`/chat?seller=${item.seller.name}`)
-  }
+    fetchProduct();
+  }, [id]);
 
   // 가격 포맷팅 함수
   const formatPrice = (price) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  }
+    return price.toLocaleString() + "원";
+  };
 
+  // 채팅하기 버튼 클릭 핸들러
+  const handleChatClick = () => {
+    if (product?.sellerName) {
+      navigate(`/chat?seller=${product.sellerName}`);
+    }
+  };
+
+  // 로딩 중 화면
   if (isLoading) {
-    return <div className="page-container">로딩 중...</div>
+    return <div className="loading">⏳ 상품 정보를 불러오는 중...</div>;
   }
 
+  // 에러 발생 시 화면
   if (error) {
     return (
-      <div className="page-container">
-        <div className="error-state">
-          <p>{error}</p>
-          <button className="btn btn-primary" onClick={() => navigate("/market")}>
-            목록으로 돌아가기
-          </button>
-        </div>
+      <div className="error-container">
+        <p>{error}</p>
+        <button className="btn-primary" onClick={() => navigate("/market")}>
+          🔙 목록으로 돌아가기
+        </button>
       </div>
-    )
+    );
   }
+  // ✅ 게시글 삭제 함수
+  const handleDelete = async () => {
+    const userId = localStorage.getItem("userId"); // ✅ 로그인된 사용자 ID 가져오기
+    if (!userId) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
 
-  if (!item) {
-    return (
-      <div className="page-container">
-        <div className="error-state">
-          <p>상품을 찾을 수 없습니다.</p>
-          <button className="btn btn-primary" onClick={() => navigate("/market")}>
-            목록으로 돌아가기
-          </button>
-        </div>
-      </div>
-    )
-  }
+    if (!window.confirm("정말로 이 게시글을 삭제하시겠습니까?")) return; // ✅ 삭제 확인창
+
+    try {
+      await axios.delete(`http://localhost:8080/api/products/${product.id}`, {
+        params: { userId },
+      });
+
+      alert("✅ 게시글이 삭제되었습니다.");
+      navigate("/market"); // ✅ 삭제 후 목록 페이지로 이동
+    } catch (error) {
+      console.error("❌ 게시글 삭제 실패:", error);
+      alert("게시글 삭제 중 오류가 발생했습니다.");
+    }
+  };
+  const formatDate = (dateString) => {
+    if (!dateString) return "날짜 정보 없음";
+
+    const date = new Date(dateString);
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false, // 24시간 형식
+    });
+  };
 
   return (
-    <div className="page-container">
-      <div className="product-detail">
-        {/* 상품 이미지 */}
-        <div>
-          <img src={item.image || "/placeholder.svg"} alt={item.title} className="product-detail-image" />
-        </div>
-
-        {/* 상품 정보 */}
-        <div>
-          {/* 판매자 정보 */}
-          <div className="seller-info">
-            <div className="seller-avatar">
-              <img src={item.seller.avatar || "/placeholder.svg"} alt={item.seller.name} />
-            </div>
-            <div className="seller-details">
-              <p className="seller-name">{item.seller.name}</p>
-              <p className="seller-location">{item.location}</p>
-            </div>
-            <div className="seller-rating">
-              <span className="seller-temperature">{item.seller.temperature}°C</span>
-              <span className="temperature-label">매너온도</span>
-            </div>
-          </div>
-
-          {/* 상품 상세 정보 */}
-          <div className="product-detail-header">
-            <h1 className="product-detail-title">{item.title}</h1>
-            <p className="product-detail-price">{formatPrice(item.price)}원</p>
-            <div className="product-detail-meta">
-              <div className="product-location">
-                <span className="product-location-icon">📍</span>
-                <span>{item.location}</span>
-              </div>
-              <span>•</span>
-              <span>등록일: {item.createdAt}</span>
-            </div>
-          </div>
-
-          {/* 상품 설명 */}
-          <div className="product-detail-description">{item.description}</div>
-
-          {/* 액션 버튼 */}
-          <div className="action-buttons">
-            <button className="action-button action-button-primary" onClick={handleChatClick}>
-              <span className="action-button-icon">💬</span>
-              채팅하기
-            </button>
-          </div>
-        </div>
+    <div className="market-item-container">
+      {/* 상품 이미지 섹션 */}
+      <div className="image-container">
+        <img
+          src={product.image || "/placeholder.svg"}
+          alt={product.title}
+          className="product-detail-image"
+        />
       </div>
 
-      {/* 하단 고정 버튼 (모바일용) */}
-      <div className="fixed-bottom">
-        <div className="fixed-bottom-content">
-          <button className="action-button action-button-primary" onClick={handleChatClick}>
-            <span className="action-button-icon">💬</span>
-            채팅하기
+      {/* 상품 상세 정보 */}
+      <div className="product-details">
+        {/* 위치 및 등록일 */}
+        <div className="product-meta">
+          <p>📍 위치: {product.location || "위치 정보 없음"}</p>
+          <p>👀 조회수: {product.views}</p>
+          <p>🕒 등록일: {formatDate(product.createdAt)}</p>
+          {product.updatedAt && product.updatedAt !== product.createdAt && (
+            <p>✏️ 수정일: {formatDate(product.updatedAt)}</p>
+          )}
+        </div>
+
+        {/* 판매자 정보 */}
+        <div className="seller-info">
+          <img
+            src={product.sellerImage || "/placeholder.svg"}
+            alt="판매자 아바타"
+            className="seller-avatar"
+          />
+          <div className="seller-text">
+            <p className="seller-name">
+              👤 {product.sellerNickname || "알 수 없음"}
+            </p>
+          </div>
+        </div>
+        <h1 className="product-title">{product.title}</h1>
+        <p className="product-price">{formatPrice(product.price)}</p>
+        <p className="product-description">{product.description}</p>
+
+        {/* 버튼 그룹 */}
+        <div className="button-group">
+          <button className="btn-secondary" onClick={() => navigate("/market")}>
+            🔙 목록으로
+          </button>
+          <button
+            className="btn-edit"
+            onClick={() => navigate(`/market/edit/${product.id}`)}
+          >
+            ✏️ 수정하기
+          </button>
+          <button className="btn-delete" onClick={handleDelete}>
+            🗑️ 삭제하기
           </button>
         </div>
       </div>
+      {/* ✅ 댓글 섹션 */}
+      <div className="comments-section">
+        <h2>💬 댓글</h2>
+        <div className="comment-input">
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="댓글을 입력하세요"
+          />
+          <button className="btn-primary" onClick={handleAddComment}>
+            등록
+          </button>
+        </div>
+        <ul className="comment-list">
+          {comments.map((comment) => (
+            <li key={comment.id} className="comment-item">
+              <div className="comment-header">
+                <strong>{comment.nickname}</strong> 🕒{" "}
+                {formatDate(comment.createdAt)}
+              </div>
+              <div className="comment-content">{comment.content}</div>
+              {comment.userId.toString() === localStorage.getItem("userId") && (
+                <button
+                  className="btn-delete-small"
+                  onClick={() => handleDeleteComment(comment.id)}
+                >
+                  삭제
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-  )
+  );
 }
 
-export default MarketItemPage
-
+export default MarketItemPage;

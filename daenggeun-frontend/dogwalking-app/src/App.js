@@ -20,6 +20,7 @@ import ExhibitionPage from "./pages/ExhibitionPage";
 import MyPage from "./pages/MyPage";
 import "./styles/App.css";
 import { registerUser } from "./utils/api"; // 📌 추가
+import EditProductPage from "./pages/EditProductPage";
 
 function App() {
   const navigate = useNavigate();
@@ -35,8 +36,6 @@ function App() {
     }
   }, []);
 
-  
-
   // 로그인 처리 함수
   const handleLogin = (userData) => {
     localStorage.setItem("nickname", userData.nickname); // 저장
@@ -44,7 +43,6 @@ function App() {
     setUser(userData.nickname);
   };
 
-  
   // 로그아웃 처리 함수
   const onLogout = () => {
     setIsAuthenticated(false);
@@ -86,12 +84,18 @@ function App() {
             path="/community/write"
             element={<CommunityWritePage isAuthenticated={isAuthenticated} />}
           />
-          <Route path="/market" element={<MarketPage />} />
-          <Route path="/market/:id" element={<MarketItemPage />} />
           <Route
             path="/market/write"
             element={<MarketWritePage isAuthenticated={isAuthenticated} />}
           />
+          <Route
+            path="/market/write"
+            element={<MarketWritePage isAuthenticated={isAuthenticated} />}
+          />
+          <Route path="/market/edit/:id" element={<EditProductPage />} />
+          <Route path="/market/:id" element={<MarketItemPage />} />
+          <Route path="/market" element={<MarketPage />} />
+
           <Route
             path="/chat"
             element={<ChatPage isAuthenticated={isAuthenticated} />}

@@ -23,7 +23,7 @@ public class CommentService {
 
     // 게시글별 댓글 조회
 
-    public List<CommentDTO> getCommentsByPostId(Long postId) {
+    public List<CommentDTO> getCommentsByPostId(Long postId, Long userId, String conten) {
         return commentRepository.findByPostId(postId).stream()
                 .map(CommentDTO::fromEntity)
                 .collect(Collectors.toList());
