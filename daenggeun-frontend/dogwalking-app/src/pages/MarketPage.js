@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Community.css";
+import "../styles/MarketPage.css";
 import { useParams } from "react-router-dom";
 
 function MarketPage() {
@@ -12,12 +12,12 @@ function MarketPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8; // 한 페이지당 10개 표시
+  const itemsPerPage = 6; // 한 페이지당 10개 표시
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-
+  
   // 초기 로그인 페이지 항시
   useEffect(() => {
     if (!userId) {
@@ -163,19 +163,18 @@ function MarketPage() {
               <div className="product-info">
                 <h3 className="product-title">{product?.title}</h3>
                 <p className="product-price">{formatPrice(product?.price)}원</p>
-
                 <div className="product-meta">
-                  <div className="product-meta-item">
-                    <span className="meta-icon">📍</span>
-                    <span>{product?.location || "위치 미지정"}</span>
+                  <div className="product-location">
+                    <span className="product-location-icon">📍</span>
+                    <span>{product?.location}</span>
                   </div>
-                  <div className="product-meta-item">
-                    <span className="meta-icon">👤</span>
-                    <span>{product?.sellerNickname || "알 수 없음"}</span>
+                  <div className="product-seller">
+                    <span className="product-seller-icon">👤</span>
+                    <span>{product?.sellerNickname}</span>
                   </div>
-                  <div className="product-meta-item">
-                    <span className="meta-icon">👀</span>
-                    <span>조회수: {product?.views}회</span>
+                  <div className="product-views">
+                    <span className="product-views-icon">👀</span>
+                    <p>조회수: {product?.views}회</p>
                   </div>
                 </div>
               </div>
