@@ -86,7 +86,8 @@ function MarketPage() {
       const filtered = products.filter(
         (product) =>
           product.title.toLowerCase().includes(searchLower) ||
-          product.location.toLowerCase().includes(searchLower)
+          product.location.toLowerCase().includes(searchLower) ||
+          product.sellerNickname?.toLowerCase().includes(searchLower)
       );
       setFilteredProducts(filtered);
     } else {
