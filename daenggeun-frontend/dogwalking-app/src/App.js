@@ -14,7 +14,6 @@ import MarketPage from './pages/MarketPage';
 import MarketItemPage from './pages/MarketItemPage';
 import MarketWritePage from './pages/MarketWritePage';
 import ChatPage from './pages/ChatPage';
-import CalendarPage from './pages/CalendarPage';
 import ExhibitionPage from './pages/ExhibitionPage';
 import MyPage from './pages/MyPage';
 

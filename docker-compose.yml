@@ -1,0 +1,20 @@
+version: '3'
+services:
+  backend:
+    image: devnjs/daenggeun-be:v01
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+
+  frontend:
+    image: devnjs/daenggeun-fe
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

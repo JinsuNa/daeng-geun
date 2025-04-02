@@ -54,13 +54,13 @@ public class User {
 
 
     @Column(nullable = false, unique = true)
-    private String username; // ✅ username 필드 추가
+    private String username; // username 필드 추가
 
-    @CreatedDate // ✅ 생성 날짜 자동 입력
+    @CreatedDate // 생성 날짜 자동 입력
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate // ✅ 업데이트 날짜 자동 입력
+    @LastModifiedDate // 업데이트 날짜 자동 입력
     private LocalDateTime updatedAt;
 
 

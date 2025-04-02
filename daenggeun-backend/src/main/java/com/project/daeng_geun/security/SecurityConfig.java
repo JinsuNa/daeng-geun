@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 활성화
                 .authorizeHttpRequests(auth -> auth
                         // 회원가입 & 로그인 API는 인증 없이 허용
-                        .requestMatchers("/api/user/register", "/api/user/login","/**").permitAll()
+                        .requestMatchers("/api/user/register", "/api/user/login").permitAll()
                         .requestMatchers("/ws-chat/**").permitAll()
                         // 인증이 필요한 API
                         .requestMatchers("/api/**").authenticated()
@@ -53,7 +53,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // React 프론트엔드 허용
+        configuration.setAllowedOrigins(List.of("http://3.107.146.13")); // React 프론트엔드 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

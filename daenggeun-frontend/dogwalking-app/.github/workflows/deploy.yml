@@ -1,0 +1,46 @@
+name: 배포
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # 작업이 실행될 환경
+    steps:
+    - name: 체크아웃
+      uses: actions/checkout@v3
+    - name: 도커허브에 로그인
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USER_NAME }}
+        password: ${{ secrets.DOCKER_USER_PW }}
+    - name: 이미지 빌드
+      run: docker build -t ${{ secrets.DOCKER_USER_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }} .
+    - name: 도커허브에 이미지 푸시
+      run: docker push ${{ secrets.DOCKER_USER_NAME }}/${{ secrets.DOCKER_IMAGE_NAME }}
+    - name: AWS EC2에 ssh 접속 후 배포
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.AWS_IP }}
+        port: 22
+        username: ubuntu
+        key: ${{ secrets.AWS_KEY }}
+        script: |
+          timedatectl set-timezone Asia/Seoul
+
+          echo "✅ 기존 컨테이너 중지 및 삭제"
+          docker-compose down --remove-orphans || true
+
+          echo "🧹 기존 이미지와 네트워크 완전 정리"
+          docker system prune -af || true
+
+          echo "📦 이미지 다시 pull"
+          S3_ACCESSKEY=${{ secrets.S3_ACCESSKEY }} \
+          S3_SECRETKEY=${{ secrets.S3_SECRETKEY }} \
+          docker-compose pull
+
+          echo "🚀 새 컨테이너 실행"
+          S3_ACCESSKEY=${{ secrets.S3_ACCESSKEY }} \
+          S3_SECRETKEY=${{ secrets.S3_SECRETKEY }} \
+          docker-compose up -d
